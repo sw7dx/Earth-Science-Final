@@ -120,16 +120,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--teal-bg);color:var(--txt)
 .sh-title{font-size:16px;font-weight:800;color:var(--teal);display:block;margin-bottom:7px;}
 .share-box p{font-size:14px;color:var(--txt2);line-height:1.8;}
 
-/* ── COMMENTS ── */
-.comments-section{margin:0 14px 24px;background:var(--surf);border:1px solid var(--teal-pale);border-radius:var(--r);padding:20px;}
-.comments-title{font-size:15px;font-weight:700;color:var(--teal);margin-bottom:12px;}
-.comment-input{width:100%;padding:11px 13px;border-radius:var(--rs);border:1.5px solid var(--teal-pale);background:var(--surf2);font-family:'Tajawal',sans-serif;font-size:14px;color:var(--txt);resize:vertical;min-height:75px;outline:none;transition:border-color .2s;display:block;margin-bottom:9px;}
-.comment-input:focus{border-color:var(--teal-ll);}
-.comment-submit{padding:9px 22px;border-radius:var(--rs);border:none;background:var(--teal);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
-.comment-submit:hover{background:#052E2E;}
-.comments-list{margin-top:13px;display:flex;flex-direction:column;gap:8px;}
-.comment-item{background:var(--teal-bg);border:1px solid var(--teal-pale);border-radius:var(--rs);padding:10px 13px;font-size:14px;line-height:1.6;}
-.comment-time{font-size:11px;color:var(--muted);margin-top:3px;}
+/* ── FOOTER prep ── */
 
 /* ── FOOTER ── */
 .footer{border-top:1px solid var(--teal-pale);margin-top:8px;padding:24px 14px 38px;text-align:center;}
@@ -205,14 +196,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--teal-bg);color:var(--txt)
 <div class="share-box">
   <span class="sh-title">الدالّ على الخير كفاعله 🤍</span>
   <p>إذا شفت إنها مفيدة شاركها مع أصحابك، يمكن تكون سبب في نجاحك بإذن الله ✨</p>
-</div>
-
-<!-- COMMENTS -->
-<div class="comments-section">
-  <div class="comments-title">💬 دعوة جملية منك — شاركنا رأيك 🤍</div>
-  <textarea class="comment-input" id="comment-text" placeholder="اكتب لي رايك في الاختبار..."></textarea>
-  <button class="comment-submit" onclick="submitComment()">إرسال التعليق</button>
-  <div class="comments-list" id="comments-list"></div>
 </div>
 
 <!-- FOOTER -->
@@ -469,7 +452,6 @@ var PG_SIZE   = 40;
 var curUnit   = 0;
 var answered  = QUESTIONS.map(function(){ return {}; });
 var curPage   = [0,0,0,0,0,0];
-var comments  = [];
 
 // ── دوال مساعدة ──
 function getMC()  { return QUESTIONS[curUnit].mc; }
@@ -664,23 +646,6 @@ function resetUnit() {
   curPage[curUnit] = 0;
   window.scrollTo({top:0, behavior:'smooth'});
   renderAll();
-}
-
-function submitComment() {
-  var text = document.getElementById('comment-text').value.trim();
-  if (!text) return;
-  var now = new Date();
-  var t = now.toLocaleDateString('ar-SA') + ' — ' + now.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
-  comments.unshift({text:text, time:t});
-  document.getElementById('comment-text').value = '';
-  renderComments();
-}
-
-function renderComments() {
-  var list = document.getElementById('comments-list');
-  list.innerHTML = comments.map(function(c){
-    return '<div class="comment-item">'+c.text+'<div class="comment-time">'+c.time+'</div></div>';
-  }).join('');
 }
 
 // ── تشغيل أولي ──
