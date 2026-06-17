@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة تفاعلية — علوم الأرض والفضاء</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+:root{
+  --teal:#0D6E6E;--teal-l:#1A9494;--teal-ll:#2BBDBD;
+  --teal-pale:#C5EFEF;--teal-bg:#EBF9F9;
+  --amber:#C47C0A;--amber-pale:#FEF3DC;
+  --red:#E04444;--red-bg:#FEE8E8;--red-tx:#8B1A1A;
+  --green:#27A366;--green-bg:#E6F7F0;--green-tx:#144D30;
+  --surf:#FFF;--surf2:#F6FEFE;
+  --txt:#0A2828;--txt2:#2D5F5F;--muted:#7AB5B5;
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal',sans-serif;background:var(--teal-bg);color:var(--txt);min-height:100vh;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#052E2E 0%,var(--teal) 55%,var(--teal-l) 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;}
+.hero::after{content:'🌍';position:absolute;font-size:200px;opacity:.04;left:-10px;bottom:-40px;line-height:1;pointer-events:none;}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.15);color:rgba(255,255,255,.92);font-size:13px;font-weight:600;padding:5px 18px;border-radius:20px;margin-bottom:14px;}
+.hero h1{font-size:clamp(20px,4.5vw,32px);font-weight:800;color:#fff;line-height:1.4;margin-bottom:6px;}
+.hero p{color:rgba(255,255,255,.75);font-size:14px;margin-bottom:26px;}
+.hero-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.hs{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:var(--rs);padding:10px 20px;color:#fff;text-align:center;min-width:80px;}
+.hs-n{font-size:22px;font-weight:800;}
+.hs-l{font-size:11px;opacity:.8;margin-top:2px;}
+
+/* ── CHAPTER TABS ── */
+.ch-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 14px 0;padding:0;}
+.ch-tab{padding:12px 6px;background:var(--surf);border:1.5px solid var(--teal-pale);border-radius:var(--rs);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);text-align:center;transition:all .2s;line-height:1.4;}
+.ch-tab:hover:not(.active){background:var(--teal-bg);border-color:var(--teal-ll);}
+.ch-tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.ch-tab .ch-icon{font-size:18px;display:block;margin-bottom:3px;}
+
+/* ── SCORE ── */
+.score-panel{background:var(--surf);margin:14px 14px 0;border-radius:var(--r);padding:16px 18px;border:1px solid var(--teal-pale);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;box-shadow:0 2px 12px rgba(13,110,110,.07);}
+.sc-i{text-align:center;}
+.sc-n{font-size:24px;font-weight:800;color:var(--teal);}
+.sc-n.ok{color:var(--green);}
+.sc-n.bad{color:var(--red);}
+.sc-l{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── PROGRESS ── */
+.prog-wrap{margin:10px 14px 0;}
+.prog-bar{height:5px;background:var(--teal-pale);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-ll));border-radius:3px;transition:width .4s ease;width:0%;}
+.prog-txt{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;}
+
+/* ── PAGE INFO ── */
+.pg-info{text-align:center;padding:10px 14px 4px;font-size:13px;color:var(--txt2);font-weight:700;}
+
+/* ── SECTION DIVIDER ── */
+.sec-head{display:flex;align-items:center;gap:8px;padding:0 14px;margin:18px 0 10px;}
+.sec-line{flex:1;height:1px;background:var(--teal-pale);}
+.sec-title{font-size:12px;font-weight:800;color:var(--teal);white-space:nowrap;background:var(--teal-bg);padding:0 10px;letter-spacing:.4px;}
+
+/* ── QUESTION CARD ── */
+.q-wrap{padding:0 14px;margin-bottom:10px;}
+.q-card{background:var(--surf);border:1.5px solid var(--teal-pale);border-radius:var(--r);padding:16px 17px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 5px rgba(13,110,110,.04);}
+.q-card:hover{box-shadow:0 4px 16px rgba(13,110,110,.1);}
+.q-card.correct{border-color:var(--green);background:var(--green-bg);}
+.q-card.wrong{border-color:var(--red);background:var(--red-bg);}
+.q-meta{display:flex;align-items:center;gap:6px;margin-bottom:9px;flex-wrap:wrap;}
+.q-num{font-size:11px;color:var(--muted);font-weight:600;}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.b-mc{background:var(--teal-pale);color:#052E2E;}
+.b-tf{background:#F0F0F0;color:#444;}
+.b-hot{background:var(--amber-pale);color:var(--amber);}
+.q-text{font-size:15px;font-weight:500;color:var(--txt);line-height:1.75;margin-bottom:12px;}
+
+/* ── MC OPTIONS ── */
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--teal-pale);background:var(--surf2);color:var(--txt);font-family:'Tajawal',sans-serif;font-size:14px;cursor:pointer;text-align:right;transition:all .15s;width:100%;}
+.opt:hover:not(:disabled){border-color:var(--teal-ll);background:var(--teal-bg);}
+.opt.correct-ans{border-color:var(--green);background:var(--green-bg);color:var(--green-tx);font-weight:700;}
+.opt.wrong-ans{border-color:var(--red);background:var(--red-bg);color:var(--red-tx);}
+.opt:disabled{cursor:default;}
+
+/* ── TF BUTTONS ── */
+.tf-row{display:flex;gap:10px;}
+.tfb{flex:1;padding:11px;border-radius:var(--rs);border:1.5px solid var(--teal-pale);background:var(--surf2);color:var(--txt);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;}
+.tfb:hover:not(:disabled){border-color:var(--teal-ll);background:var(--teal-bg);}
+.tfb.correct-ans{border-color:var(--green);background:var(--green-bg);color:var(--green-tx);}
+.tfb.wrong-ans{border-color:var(--red);background:var(--red-bg);color:var(--red-tx);}
+
+/* ── EXPLANATION ── */
+.explanation{margin-top:10px;padding:10px 12px;font-size:13px;line-height:1.6;border-right:3px solid;border-radius:0 var(--rs) var(--rs) 0;}
+.explanation.ok{border-color:var(--green);background:#D4F5E5;color:var(--green-tx);}
+.explanation.bad{border-color:var(--red);background:#FFD6D6;color:var(--red-tx);}
+
+/* ── PAGINATION ── */
+.pagination{display:flex;justify-content:center;align-items:center;gap:10px;padding:18px 14px;flex-wrap:wrap;}
+.pg-btn{padding:10px 22px;border-radius:var(--rs);border:1.5px solid var(--teal-pale);background:var(--surf);color:var(--teal);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;}
+.pg-btn:hover:not(:disabled){background:var(--teal);color:#fff;border-color:var(--teal);}
+.pg-btn:disabled{opacity:.35;cursor:default;}
+.pg-btn.primary{background:var(--teal);color:#fff;border-color:var(--teal);}
+.pg-num{font-size:13px;color:var(--txt2);font-weight:600;}
+
+/* ── RESULTS ── */
+.results-panel{display:none;margin:0 14px 16px;background:var(--surf);border:2px solid var(--teal-pale);border-radius:var(--r);padding:26px 20px;text-align:center;box-shadow:0 4px 22px rgba(13,110,110,.1);}
+.results-panel.show{display:block;}
+.res-big{font-size:52px;font-weight:800;color:var(--teal);}
+.res-lbl{font-size:15px;color:var(--txt2);margin:6px 0 18px;}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.res-item{background:var(--teal-bg);border-radius:var(--rs);padding:12px 8px;}
+.res-n{font-size:22px;font-weight:800;}
+.res-l{font-size:11px;color:var(--muted);margin-top:2px;}
+.res-item.ok .res-n{color:var(--green);}
+.res-item.bad .res-n{color:var(--red);}
+.btn-reset{padding:11px 26px;border-radius:var(--rs);border:none;background:var(--teal);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-reset:hover{background:#052E2E;}
+
+/* ── SHARE BOX ── */
+.share-box{margin:0 14px 16px;background:linear-gradient(135deg,#EBF9F9,#C5EFEF40);border:1px solid var(--teal-pale);border-radius:var(--r);padding:20px;text-align:center;}
+.sh-title{font-size:16px;font-weight:800;color:var(--teal);display:block;margin-bottom:7px;}
+.share-box p{font-size:14px;color:var(--txt2);line-height:1.8;}
+
+/* ── COMMENTS ── */
+.comments-section{margin:0 14px 24px;background:var(--surf);border:1px solid var(--teal-pale);border-radius:var(--r);padding:20px;}
+.comments-title{font-size:15px;font-weight:700;color:var(--teal);margin-bottom:12px;}
+.comment-input{width:100%;padding:11px 13px;border-radius:var(--rs);border:1.5px solid var(--teal-pale);background:var(--surf2);font-family:'Tajawal',sans-serif;font-size:14px;color:var(--txt);resize:vertical;min-height:75px;outline:none;transition:border-color .2s;display:block;margin-bottom:9px;}
+.comment-input:focus{border-color:var(--teal-ll);}
+.comment-submit{padding:9px 22px;border-radius:var(--rs);border:none;background:var(--teal);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.comment-submit:hover{background:#052E2E;}
+.comments-list{margin-top:13px;display:flex;flex-direction:column;gap:8px;}
+.comment-item{background:var(--teal-bg);border:1px solid var(--teal-pale);border-radius:var(--rs);padding:10px 13px;font-size:14px;line-height:1.6;}
+.comment-time{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--teal-pale);margin-top:8px;padding:24px 14px 38px;text-align:center;}
+.footer-inner{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.footer-credit{font-size:14px;font-weight:700;color:var(--txt2);}
+.footer-credit a{color:var(--teal);text-decoration:none;font-weight:800;}
+.footer-credit a:hover{text-decoration:underline;}
+.footer-meta{font-size:12px;color:var(--muted);}
+.footer-copy{font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🌍 علوم الأرض والفضاء — ثالث ثانوي | القسم الثاني</div>
+  <h1>مراجعة تفاعلية شاملة<br>للاختبار النهائي</h1>
+  <p>اختر الفصل ثم نوع السؤال وابدأ مباشرة</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-n" id="stat-total">196</div><div class="hs-l">إجمالي الأسئلة</div></div>
+    <div class="hs"><div class="hs-n" id="stat-mc">0</div><div class="hs-l">اختيار متعدد</div></div>
+    <div class="hs"><div class="hs-n" id="stat-tf">0</div><div class="hs-l">صح / خطأ</div></div>
+    <div class="hs"><div class="hs-n">6</div><div class="hs-l">فصول</div></div>
+  </div>
+</div>
+
+<!-- CHAPTER TABS -->
+<div class="ch-tabs">
+  <button class="ch-tab active" onclick="switchUnit(0,this)"><span class="ch-icon">🪐</span>ف١: المجموعة الشمسية</button>
+  <button class="ch-tab" onclick="switchUnit(1,this)"><span class="ch-icon">☀️</span>ف٢: البيئة الفضائية</button>
+  <button class="ch-tab" onclick="switchUnit(2,this)"><span class="ch-icon">🔭</span>ف٣: الأجهزة الفلكية</button>
+  <button class="ch-tab" onclick="switchUnit(3,this)"><span class="ch-icon">🦴</span>ف٤: الأحافير والتأريخ</button>
+  <button class="ch-tab" onclick="switchUnit(4,this)"><span class="ch-icon">⛽</span>ف٥: الطاقة ومصادرها</button>
+  <button class="ch-tab" onclick="switchUnit(5,this)"><span class="ch-icon">🗺️</span>ف٦: جيولوجيا المملكة</button>
+</div>
+
+<!-- SCORE PANEL -->
+<div class="score-panel">
+  <div class="sc-i"><div class="sc-n" id="sc-ans">0</div><div class="sc-l">أجبت</div></div>
+  <div class="sc-i"><div class="sc-n ok" id="sc-cor">0</div><div class="sc-l">صحيح</div></div>
+  <div class="sc-i"><div class="sc-n bad" id="sc-wrg">0</div><div class="sc-l">خطأ</div></div>
+  <div class="sc-i"><div class="sc-n" id="sc-pct" style="color:var(--teal)">—</div><div class="sc-l">نسبة النجاح</div></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-txt" id="prog-txt">0 من 0 سؤال</div>
+</div>
+
+<!-- PAGE INFO -->
+<div class="pg-info" id="pg-info"></div>
+
+<!-- QUIZ CONTAINER -->
+<div id="quiz"></div>
+
+<!-- PAGINATION -->
+<div class="pagination" id="pag"></div>
+
+<!-- RESULTS -->
+<div class="results-panel" id="results-panel">
+  <div class="res-big" id="res-pct">—</div>
+  <div class="res-lbl">نتيجتك النهائية في هذا الفصل 🎉</div>
+  <div class="res-grid">
+    <div class="res-item"><div class="res-n" id="res-total">0</div><div class="res-l">إجمالي</div></div>
+    <div class="res-item ok"><div class="res-n" id="res-cor">0</div><div class="res-l">صحيحة</div></div>
+    <div class="res-item bad"><div class="res-n" id="res-wrg">0</div><div class="res-l">خاطئة</div></div>
+  </div>
+  <button class="btn-reset" onclick="resetUnit()">↺ إعادة الاختبار</button>
+</div>
+
+<!-- SHARE BOX -->
+<div class="share-box">
+  <span class="sh-title">الدالّ على الخير كفاعله 🤍</span>
+  <p>إذا شفت إنها مفيدة شاركها مع أصحابك، يمكن تكون سبب في نجاحك بإذن الله ✨</p>
+</div>
+
+<!-- COMMENTS -->
+<div class="comments-section">
+  <div class="comments-title">💬 دعوة جملية منك — شاركنا رأيك 🤍</div>
+  <textarea class="comment-input" id="comment-text" placeholder="اكتب لي رايك في الاختبار..."></textarea>
+  <button class="comment-submit" onclick="submitComment()">إرسال التعليق</button>
+  <div class="comments-list" id="comments-list"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-credit">إعداد وتصميم: <a href="https://www.instagram.com/sw7dx" target="_blank" rel="noopener">@sw7dx</a></div>
+    <div class="footer-meta">علوم الأرض والفضاء — ثالث ثانوي — الفصل الدراسي الثاني 1446/1447هـ</div>
+    <div class="footer-copy">© 2026 جميع الحقوق محفوظة</div>
+  </div>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════
+// بنك الأسئلة — 6 فصول كاملة
+// ════════════════════════════════════════════════
+var QUESTIONS = [
+
+// ═══ الفصل الأول: المجموعة الشمسية ═══
+{
+  mc:[
+    {id:'f1m1',hot:true,text:'كم يبلغ عمر المجموعة الشمسية؟',opts:['4.5 مليون سنة','4.6 مليار سنة','2.5 مليار سنة','6.1 مليار سنة'],ans:1,exp:'عمر المجموعة الشمسية يُقدَّر بـ 4.6 مليار سنة.'},
+    {id:'f1m2',hot:true,text:'ما هي الكواكب الخارجية (الغازية) في المجموعة الشمسية؟',opts:['عطارد، الزهرة، الأرض، المريخ','المشتري، زحل، أورانوس، نبتون','المريخ، المشتري، زحل، أورانوس','الزهرة، الأرض، المريخ، المشتري'],ans:1,exp:'الكواكب الخارجية الغازية: المشتري، زحل، أورانوس، نبتون.'},
+    {id:'f1m3',hot:true,text:'لماذا لم يعد بلوتو كوكباً ضمن المجموعة الشمسية؟',opts:['لصغر حجمه','لضعف جاذبيته','لعدم استيفائه شروط تعريف الكوكب — مداره مشترك مع نبتون','لعدم وجود غلاف جوي'],ans:2,exp:'بلوتو لم يستوفِ الشرط الثالث: خلو محيطه من أجرام أكبر، إذ يشترك مداره مع نبتون.'},
+    {id:'f1m4',hot:true,text:'ما هي الكواكب الداخلية (الأرضية)؟',opts:['عطارد، الزهرة، الأرض، المريخ','المشتري، زحل، أورانوس، نبتون','المريخ، المشتري، زحل، أورانوس','الزهرة، الأرض، المريخ، المشتري'],ans:0,exp:'الكواكب الداخلية الأرضية: عطارد، الزهرة، الأرض، المريخ.'},
+    {id:'f1m5',hot:true,text:'ما هي شروط تعريف الكوكب حسب الاتحاد الفلكي الدولي؟',opts:['يدور حول الشمس فقط','له كتلة كافية لجاذبيته الذاتية فقط','خلو مداره من أجرام أخرى أكبر فقط','جميع ما ذُكر صحيح'],ans:3,exp:'يجب استيفاء ثلاثة شروط: يدور حول الشمس، له كتلة كافية لجاذبيته، وخلو مداره من أجرام أكبر.'},
+    {id:'f1m6',hot:true,text:'كم تساوي الوحدة الفلكية؟',opts:['100 مليون كم','150 مليون كم','200 مليون كم','250 مليون كم'],ans:1,exp:'الوحدة الفلكية = 150 مليون كيلومتر (متوسط المسافة بين الأرض والشمس).'},
+    {id:'f1m7',hot:true,text:'كم يستغرق ضوء الشمس للوصول إلى الأرض؟',opts:['8 دقائق و3 ثواني','8 دقائق و20 ثانية','9 دقائق','10 دقائق'],ans:1,exp:'ضوء الشمس يستغرق 500 ثانية ≈ 8 دقائق و20 ثانية للوصول إلى الأرض.'},
+    {id:'f1m8',hot:true,text:'أيٌّ من الكواكب التالية أصغر كواكب المجموعة الشمسية؟',opts:['عطارد','الزهرة','المريخ','الأرض'],ans:0,exp:'عطارد هو أصغر كواكب المجموعة الشمسية.'},
+    {id:'f1m9',hot:true,text:'أيٌّ من الكواكب الداخلية يتميز بأعلى درجة حرارة؟',opts:['عطارد','الزهرة','المريخ','الأرض'],ans:1,exp:'الزهرة أشد الكواكب حرارةً بسبب غلافها الكثيف من CO₂.'},
+    {id:'f1m10',hot:true,text:'أيٌّ من الكواكب الداخلية يدور حول نفسه باتجاه عقارب الساعة (دوران تراجعي)؟',opts:['الأرض','المريخ','الزهرة','عطارد'],ans:2,exp:'الزهرة تدور حول نفسها تراجعياً عكس بقية الكواكب.'},
+    {id:'f1m11',hot:true,text:'أيٌّ من الكواكب التالية أكبر كواكب المجموعة الشمسية؟',opts:['زحل','المشتري','أورانوس','نبتون'],ans:1,exp:'المشتري أكبر كواكب المجموعة الشمسية.'},
+    {id:'f1m12',hot:true,text:'ما هو أكبر قمر للمشتري؟',opts:['تيتان','جانيميد','أوروبا','آيو'],ans:1,exp:'جانيميد أكبر أقمار المشتري وأكبر قمر في المجموعة الشمسية.'},
+    {id:'f1m13',hot:true,text:'ما الذي يميّز كوكب زحل؟',opts:['البقعة الحمراء','الحلقات الواضحة','الحجم الكبير','الغلاف الجوي'],ans:1,exp:'زحل يتميز بحلقاته الواضحة المكوّنة من صخور وجليد وغبار.'},
+    {id:'f1m14',hot:true,text:'أيٌّ من الكواكب التالية تم اكتشافه بواسطة التلسكوب أولاً؟',opts:['نبتون','أورانوس','زحل','المشتري'],ans:1,exp:'أورانوس أول كوكب يُكتشف بالتلسكوب على يد ويليام هيرشل.'},
+    {id:'f1m15',hot:true,text:'ما سبب اللون الأخضر المائل للزرقة لكوكب أورانوس؟',opts:['وجود الميثان في الغلاف الجوي','وجود الهيدروجين','وجود الهيليوم','لا يوجد سبب محدد'],ans:0,exp:'الميثان (2% من الغلاف الجوي) هو سبب اللون الأخضر-الأزرق لأورانوس.'},
+    {id:'f1m16',hot:true,text:'ما هي الكويكبات؟',opts:['أجرام ثلجية تدور حول الشمس','أجرام صخرية صغيرة غير منتظمة تدور حول الشمس','نجوم صغيرة في المجرة','أقمار صغيرة تدور حول المريخ'],ans:1,exp:'الكويكبات أجرام صخرية صغيرة غير منتظمة، تتركز في حزام بين المريخ والمشتري.'},
+    {id:'f1m17',hot:true,text:'ما الفرق بين الشهاب والنيزك؟',opts:['الشهاب أكبر حجماً من النيزك','النيزك الجرم الصخري، والشهاب ما يُرى عند احتراقه في الغلاف الجوي','هما نفس الشيء','النيزك يدور حول الأرض والشهاب حول الشمس'],ans:1,exp:'النيازك أجرام صخرية. عند احتراق النيزك في الغلاف الجوي يُسمى شهاباً.'},
+    {id:'f1m18',hot:true,text:'أين تتشكل المذنبات ذات المدارات القصيرة؟',opts:['سحابة أورت','حزام كويبر','حزام الكويكبات','بين المريخ والمشتري'],ans:1,exp:'المذنبات قصيرة المدار تأتي من حزام كويبر خارج مدار نبتون.'},
+    {id:'f1m19',hot:false,text:'بُعد كوكب عطارد عن الشمس:',opts:['0.3 وحدة فلكية','0.4 وحدة فلكية','0.7 وحدة فلكية','1.0 وحدة فلكية'],ans:1,exp:'بُعد عطارد عن الشمس = 0.4 وحدة فلكية.'},
+    {id:'f1m20',hot:false,text:'ما نسبة CO₂ في الغلاف الجوي للزهرة؟',opts:['3%','50%','97%','100%'],ans:2,exp:'غلاف الزهرة يتكون بنسبة 97% من CO₂ مما يجعلها أشد الكواكب حرارة.'},
+    {id:'f1m21',hot:false,text:'ما الكوكب المعروف بـ"الكوكب الأحمر"؟',opts:['عطارد','الزهرة','المريخ','المشتري'],ans:2,exp:'المريخ يُسمى الكوكب الأحمر بسبب تربته المكوّنة من أكاسيد الحديد.'},
+    {id:'f1m22',hot:false,text:'كم عدد أقمار المشتري التقريبي؟',opts:['60','70','80','90'],ans:2,exp:'للمشتري نحو 80 قمراً.'},
+    {id:'f1m23',hot:false,text:'ما هي سحابة أورت؟',opts:['منطقة بين المريخ والمشتري','غلاف جليدي كروي يحيط بالنظام الشمسي من الخارج','مجموعة نجوم قريبة من الشمس','حزام من الكويكبات'],ans:1,exp:'سحابة أورت غلاف جليدي كروي بعيد يُعتقد أنه مصدر المذنبات طويلة المدار.'},
+    {id:'f1m24',hot:false,text:'ما هو مذنب هالي؟',opts:['مذنب طويل المدار يمر كل 200 عام','مذنب قصير المدار يمر كل 76 عاماً','كويكب يمر بالقرب من الأرض','نيزك كبير'],ans:1,exp:'مذنب هالي يمر كل 76 سنة — آخر مرور عام 1986م، والقادم عام 2061م.'},
+    {id:'f1m25',hot:false,text:'ما تيتان ولماذا يهم العلماء؟',opts:['أكبر أقمار زحل وله غلاف جوي كثيف','أصغر أقمار المشتري','كوكب قزم قرب نبتون','نجم قريب من المجموعة الشمسية'],ans:0,exp:'تيتان أكبر أقمار زحل وثاني أكبر قمر في المجموعة الشمسية، ويمتلك غلافاً جوياً كثيفاً من النيتروجين.'},
+    {id:'f1m26',hot:false,text:'ما هو القمر الذي يُعتقد أنه يحتوي على محيطات مائية تحت سطحه؟',opts:['جانيميد','آيو','أوروبا','تيتان'],ans:2,exp:'أوروبا (قمر المشتري) يُعتقد أنه يحتوي على محيط مائي تحت سطحه الجليدي، وهو هدف بحث عن الحياة.'},
+  ],
+  tf:[
+    {id:'f1t1',hot:true,text:'تدور الكواكب حول الشمس في مدارات دائرية.',ans:false,exp:'خطأ — الكواكب تدور في مدارات إهليجية (بيضاوية) وليس دائرية.'},
+    {id:'f1t2',hot:true,text:'يُعتبر كوكب المشتري أصغر كواكب المجموعة الشمسية.',ans:false,exp:'خطأ — المشتري أكبر كواكب المجموعة. عطارد هو الأصغر.'},
+    {id:'f1t3',hot:true,text:'الكواكب القزمة تشترك مداراتها مع أجرام أخرى.',ans:true,exp:'صح — هذا هو السبب الرئيسي لعدم تصنيفها ككواكب رئيسية.'},
+    {id:'f1t4',hot:true,text:'عطارد هو أقرب الكواكب إلى الشمس.',ans:true,exp:'صح — عطارد أقرب الكواكب من الشمس (0.4 وحدة فلكية).'},
+    {id:'f1t5',hot:true,text:'يتكون النظام الشمسي من الشمس والكواكب فقط.',ans:false,exp:'خطأ — يتكون أيضاً من الأقمار والكويكبات والكواكب القزمة والمذنبات والنيازك.'},
+    {id:'f1t6',hot:true,text:'يستغرق ضوء الشمس حوالي 500 ثانية للوصول إلى الأرض.',ans:true,exp:'صح — 500 ثانية ≈ 8 دقائق و20 ثانية.'},
+    {id:'f1t7',hot:true,text:'جميع الكواكب الداخلية لها حلقات.',ans:false,exp:'خطأ — لا توجد حلقات حول الكواكب الداخلية. الحلقات في الكواكب الخارجية كزحل وأورانوس.'},
+    {id:'f1t8',hot:true,text:'الزهرة تشبه الأرض كثيراً من حيث الحجم والكتلة والكثافة.',ans:true,exp:'صح — الزهرة أقرب الكواكب شبهاً بالأرض في هذه الخصائص.'},
+    {id:'f1t9',hot:true,text:'المريخ يتميز بتربة مكوّنة من أكاسيد الحديد.',ans:true,exp:'صح — أكاسيد الحديد سبب اللون الأحمر للمريخ.'},
+    {id:'f1t10',hot:true,text:'البقعة الحمراء على المشتري هي عاصفة ذات قطر يساوي ضعف قطر الأرض.',ans:true,exp:'صح — البقعة الحمراء عاصفة ضخمة قطرها يساوي ضعف قطر الأرض.'},
+    {id:'f1t11',hot:true,text:'تيتان أكبر أقمار زحل وثاني أكبر أقمار المجموعة الشمسية وله غلاف جوي.',ans:true,exp:'صح — تيتان الوحيد من الأقمار الذي له غلاف جوي كثيف.'},
+    {id:'f1t12',hot:true,text:'حزام الكويكبات يقع بين كوكبي المريخ والمشتري.',ans:true,exp:'صح — حزام الكويكبات يقع بين مداري المريخ والمشتري.'},
+    {id:'f1t13',hot:true,text:'الشهب هي نيازك تحترق في الغلاف الجوي قبل الوصول إلى سطح الأرض.',ans:true,exp:'صح — النيزك يُسمى شهاباً عند احتراقه في الغلاف الجوي.'},
+    {id:'f1t14',hot:true,text:'المذنبات تتكون بشكل رئيسي من الصخور والمعادن.',ans:false,exp:'خطأ — المذنبات تتكون أساساً من الجليد. يتحول لسحابة غازية عند اقتراب المذنب من الشمس.'},
+    {id:'f1t15',hot:true,text:'مذنب هالي يمر عبر النظام الشمسي كل 50 سنة.',ans:false,exp:'خطأ — مذنب هالي يمر كل 76 سنة.'},
+    {id:'f1t16',hot:false,text:'عطارد يدور حول الشمس في 88 يوماً.',ans:true,exp:'صح — عطارد يكمل دورته حول الشمس في 88 يوماً فقط لقربه الشديد منها.'},
+    {id:'f1t17',hot:false,text:'الكواكب الخارجية تتشابه في كونها كبيرة الحجم ذات مجالات مغناطيسية قوية وأقمار عديدة.',ans:true,exp:'صح — هذه من أبرز خصائص الكواكب الخارجية مقارنةً بالداخلية.'},
+    {id:'f1t18',hot:false,text:'الكويكبات هي أجرام سماوية كبيرة نسبياً تدور حول الشمس.',ans:false,exp:'خطأ — الكويكبات أجرام صخرية صغيرة غير منتظمة الشكل.'},
+  ]
+},
+
+// ═══ الفصل الثاني: البيئة الفضائية ═══
+{
+  mc:[
+    {id:'f2m1',hot:true,text:'العلم الذي يدرس الظروف المتغيرة في النشاط الشمسي وتأثيرها على التكنولوجيا:',opts:['علم البيئة الفضائية','علم الكون','التقنية الفضائية','علم الفلك'],ans:0,exp:'علم البيئة الفضائية يدرس الظروف المتغيرة في النشاط الشمسي وتأثيرها على الأنظمة التكنولوجية.'},
+    {id:'f2m2',hot:true,text:'ما العملية التي تحدث في لب الشمس؟',opts:['الانشطار النووي','الاندماج النووي','التفاعل الكيميائي','لا يوجد تفاعل'],ans:1,exp:'في لب الشمس يحدث الاندماج النووي: تتحول نوى الهيدروجين إلى هيليوم.'},
+    {id:'f2m3',hot:true,text:'ما هي طبقات الشمس الخارجية؟',opts:['اللب، الإشعاع، الحمل','الغلاف الضوئي، الطبقة الملونة، الإكليل','الستراتوسفير، الميزوسفير، الثيرموسفير','لب وإكليل فقط'],ans:1,exp:'طبقات الشمس الخارجية: الغلاف الضوئي (الفوتوسفير)، الطبقة الملونة، الإكليل.'},
+    {id:'f2m4',hot:true,text:'كم تستغرق الشمس لإكمال دورة واحدة عند خط الاستواء؟',opts:['25 يوماً','27 يوماً','30 يوماً','32 يوماً'],ans:1,exp:'عند خط الاستواء تستغرق الشمس 27 يوماً. وعند القطبين 32 يوماً — الدوران التفاضلي.'},
+    {id:'f2m5',hot:true,text:'ما اسم الظاهرة التي تجعل الشمس تدور أسرع عند خط الاستواء مقارنةً بالأقطاب؟',opts:['الدوران المنتظم','الدوران التفاضلي','الدوران النسبي','الدوران المتزامن'],ans:1,exp:'الدوران التفاضلي — لأن الشمس ليست جسماً صلباً بل كرة من الغازات.'},
+    {id:'f2m6',hot:true,text:'ما الذي يتسبب في تكوين البقع الشمسية؟',opts:['التفاعلات النووية في اللب','حركة البلازما','التواء خطوط المجال المغناطيسي','جاذبية الكواكب'],ans:2,exp:'مع دوران الشمس تلتوي خطوط المجال المغناطيسي مشكِّلةً حلقات تنتج عنها البقع الشمسية.'},
+    {id:'f2m7',hot:true,text:'كم تستغرق دورة النشاط الشمسي؟',opts:['10 أعوام','11 عاماً','12 عاماً','15 عاماً'],ans:1,exp:'دورة النشاط الشمسي تستمر 11 عاماً، وفيها ينقلب المجال المغناطيسي للشمس.'},
+    {id:'f2m8',hot:true,text:'ما الذي يمكن استخدامه لتتبع الدورة الشمسية؟',opts:['عدد النجوم','عدد الكواكب','عدد البقع الشمسية','عدد المجرات'],ans:2,exp:'يمكن تتبع الدورة الشمسية عن طريق حساب عدد البقع الشمسية.'},
+    {id:'f2m9',hot:true,text:'ما الذي يميز التوهجات الشمسية؟',opts:['انفجار مفاجئ للطاقة فقط','انبعاث كميات كبيرة من الجسيمات المشحونة فقط','تأثيرها على الاتصالات والأقمار الصناعية فقط','جميع ما ذُكر صحيح'],ans:3,exp:'التوهجات الشمسية: انفجار مفاجئ للطاقة مع انبعاث جسيمات مشحونة، تؤثر على الاتصالات والأقمار.'},
+    {id:'f2m10',hot:true,text:'ما هو الانبعاث الكتلي الإكليلي؟',opts:['قذف كميات كبيرة من مادة الشمس يتكون بشكل رئيسي من الإلكترونات والبروتونات ويصل الأرض خلال 15 ساعة','ظاهرة ضوئية عند القطبين','طبقة في الغلاف الجوي','دوران الشمس'],ans:0,exp:'الانبعاث الكتلي الإكليلي: قذف كميات كبيرة من إلكترونات وبروتونات، تصل الأرض في حوالي 15 ساعة.'},
+    {id:'f2m11',hot:true,text:'ما هو الشفق القطبي؟',opts:['ظاهرة ضوئية تنتج عن تفاعل الجسيمات المشحونة مع الغلاف الجوي عند القطبين','مرحلة من مراحل الدورة الشمسية','نوع من البقع الشمسية','ظاهرة بركانية'],ans:0,exp:'الشفق القطبي ظاهرة ضوئية تنتج عند احتكاك الجسيمات المشحونة القادمة من الشمس بذرات الغلاف الجوي.'},
+    {id:'f2m12',hot:true,text:'ما هي الشواظ الشمسية؟',opts:['حلقات من البلازما المتوهجة ترافق البقع الشمسية','طبقة في الغلاف الشمسي','نوع من التوهجات','مجموعة من البقع الشمسية'],ans:0,exp:'الشواظ الشمسية: حلقات بلازما متوهجة باللون الأحمر، ترافق البقع الشمسية، مرتبطة بالمجال المغناطيسي.'},
+    {id:'f2m13',hot:true,text:'متى تم توثيق أول دورة شمسية؟',opts:['عام 1750م','عام 1755م','عام 1800م','عام 1850م'],ans:1,exp:'عام 1755م تم توثيق أول دورة شمسية، ومنذ ذلك الحين تم التعرف على 25 دورة.'},
+    {id:'f2m14',hot:true,text:'في أي مرحلة يكون عدد البقع الشمسية أقل ما يمكن؟',opts:['الحد الأدنى (بداية الدورة)','الحد الأقصى','المنتصف','لا فرق'],ans:0,exp:'في بداية الدورة تحتوي الشمس على بقع أقل (الحد الأدنى)، ثم يزيد عددها حتى يصل للحد الأقصى.'},
+    {id:'f2m15',hot:false,text:'ما المدة التي يستغرقها المجال المغناطيسي للشمس حتى يعود لوضعه الأصلي؟',opts:['11 عاماً','22 عاماً','33 عاماً','44 عاماً'],ans:1,exp:'11 سنة للانقلاب + 11 سنة للعودة = 22 سنة كاملة للعودة للوضع الأصلي.'},
+  ],
+  tf:[
+    {id:'f2t1',hot:true,text:'الشمس نجم صغير الحجم وبارد السطح.',ans:false,exp:'خطأ — الشمس نجم متوسط الحجم. درجة حرارة سطحها نحو 5500 درجة مئوية.'},
+    {id:'f2t2',hot:true,text:'تنتقل الطاقة في المنطقة الحملية عن طريق الإشعاع.',ans:false,exp:'خطأ — في المنطقة الحملية تنتقل الطاقة بالحمل الحراري. الإشعاع يحدث في منطقة الإشعاع.'},
+    {id:'f2t3',hot:true,text:'سلسلة بروتون-بروتون هي سلسلة تفاعلات تحول الهيدروجين إلى هيليوم.',ans:true,exp:'صح — سلسلة بروتون-بروتون تمر بثلاث مراحل يتحول فيها الهيدروجين إلى هيليوم مع إطلاق طاقة.'},
+    {id:'f2t4',hot:true,text:'الإكليل أبعد طبقات الشمس الخارجية ويمتد لملايين الكيلومترات.',ans:true,exp:'صح — الإكليل أبعد الطبقات وأشدها حرارة (مليوني درجة) ويمتد لملايين الكيلومترات.'},
+    {id:'f2t5',hot:true,text:'لا يمكن رؤية الطبقة الملونة إلا أثناء الكسوف الكلي.',ans:true,exp:'صح — الطبقة الملونة لا ترى إلا أثناء الكسوف الكلي للشمس.'},
+    {id:'f2t6',hot:true,text:'الشمس جسم صلب يدور بشكل منتظم.',ans:false,exp:'خطأ — الشمس ليست جسماً صلباً بل كرة من الغازات، لذلك تدور بالدوران التفاضلي.'},
+    {id:'f2t7',hot:true,text:'البقع الشمسية مناطق ذات مجال مغناطيسي ضعيف.',ans:false,exp:'خطأ — البقع الشمسية مناطق ذات مجال مغناطيسي قوي جداً، وهي أبرد من محيطها لذلك تبدو داكنة.'},
+    {id:'f2t8',hot:true,text:'خلال الدورة الشمسية يتبادل القطبان الشمالي والجنوبي للشمس أماكنهما.',ans:true,exp:'صح — المجال المغناطيسي ينقلب تماماً خلال كل دورة مدتها 11 سنة.'},
+    {id:'f2t9',hot:true,text:'التوهجات الشمسية يمكن أن تؤثر على الاتصالات والأقمار الصناعية.',ans:true,exp:'صح — الجسيمات المشحونة من التوهجات تتفاعل مع الأيونوسفير مؤثرةً على إشارات الراديو والاتصالات.'},
+    {id:'f2t10',hot:true,text:'الانبعاث الكتلي الإكليلي لا يمكن أن يصل إلى الأرض.',ans:false,exp:'خطأ — يصل إلى الأرض في غضون 15 ساعة ويؤثر على الأقمار الصناعية والاتصالات.'},
+    {id:'f2t11',hot:true,text:'الشفق القطبي يحدث بسبب التفاعلات الكيميائية في الغلاف الجوي.',ans:false,exp:'خطأ — يحدث بسبب احتكاك الجسيمات المشحونة القادمة من الشمس بذرات الغلاف الجوي.'},
+    {id:'f2t12',hot:false,text:'البقع الشمسية مناطق ساخنة على سطح الشمس.',ans:false,exp:'خطأ — البقع الشمسية أبرد من المناطق المحيطة (4000°س مقابل 5500°س) لذلك تبدو داكنة.'},
+  ]
+},
+
+// ═══ الفصل الثالث: الأجهزة الفلكية ═══
+{
+  mc:[
+    {id:'f3m1',hot:true,text:'أيٌّ من أنواع الأشعة التالية لها أقصر طول موجي؟',opts:['أشعة جاما','الأشعة السينية','أشعة فوق البنفسجية','الضوء المرئي'],ans:0,exp:'أشعة جاما لها أقصر طول موجي وأعلى طاقة في الطيف الكهرومغناطيسي.'},
+    {id:'f3m2',hot:true,text:'أيٌّ من أنواع الأشعة التالية لها أطول طول موجي؟',opts:['الأشعة تحت الحمراء','الأشعة الراديوية','الضوء المرئي','الأشعة فوق البنفسجية'],ans:1,exp:'الأشعة الراديوية لها أطول موجة وأقل طاقة في الطيف الكهرومغناطيسي.'},
+    {id:'f3m3',hot:true,text:'ما العلاقة بين الطول الموجي والتردد للأشعة الكهرومغناطيسية؟',opts:['علاقة طردية','علاقة عكسية','لا توجد علاقة','علاقة لوغاريتمية'],ans:1,exp:'كلما زاد الطول الموجي قل التردد والعكس صحيح — علاقة عكسية.'},
+    {id:'f3m4',hot:true,text:'ما الجهاز المستخدم لتحليل أشعة النجم إلى أطياف؟',opts:['التلسكوب','الكاميرا','المطياف','المنشور'],ans:2,exp:'المطياف (Spectrometer) يحلل أشعة النجم إلى أطيافها المختلفة.'},
+    {id:'f3m5',hot:true,text:'أيٌّ من الأطياف التالية يظهر كخطوط سوداء على خلفية ملونة؟',opts:['طيف الامتصاص','طيف الانبعاث','طيف مستمر','لا شيء مما سبق'],ans:0,exp:'طيف الامتصاص يظهر كخطوط سوداء على خلفية ملونة — ينبعث من جسم ساخن بغاز بارد.'},
+    {id:'f3m6',hot:true,text:'أيٌّ من الأطياف التالية يظهر كطيف متصل من الألوان؟',opts:['طيف الامتصاص','طيف الانبعاث','طيف مستمر','طيف فرنهوفر'],ans:2,exp:'الطيف المستمر ينبعث من جسم ساخن ويظهر كألوان متصلة بدون خطوط.'},
+    {id:'f3m7',hot:true,text:'متى ينتقل الإلكترون إلى مستوى طاقة أعلى؟',opts:['عندما يفقد طاقة','عندما يمتص طاقة (فوتون)','عندما يبقى في نفس المستوى','لا ينتقل'],ans:1,exp:'الإلكترون ينتقل لمستوى أعلى عند امتصاص فوتون، وينزل عند انبعاث فوتون.'},
+    {id:'f3m8',hot:true,text:'ما الوظيفة الرئيسية للتلسكوب؟',opts:['تكبير الأجرام فقط','تجميع وتركيز الإشعاع الكهرومغناطيسي من الأجرام السماوية','إرسال إشارات للفضاء','قياس المسافات بين النجوم'],ans:1,exp:'وظيفة التلسكوب: استقبال وتجميع الإشعاع، تكوين صورة واضحة، وتكبير صور الأجرام.'},
+    {id:'f3m9',hot:true,text:'ما وظيفة العدسة الشيئية في التلسكوب؟',opts:['تكبير صورة الجسم','جمع الأشعة عند البؤرة','رؤية صورة الجسم','تحديد قوة التكبير'],ans:1,exp:'العدسة الشيئية تجمع الأشعة عند البؤرة. كلما زاد قطرها زادت كفاءة التلسكوب.'},
+    {id:'f3m10',hot:true,text:'على ماذا تعتمد قوة تجميع التلسكوب؟',opts:['طول التلسكوب','قطر العدسة الشيئية','قطر العدسة العينية','البعد البؤري للعينية'],ans:1,exp:'قوة تجميع التلسكوب تعتمد على قطر العدسة الشيئية — كلما زاد الحجم زادت القدرة.'},
+    {id:'f3m11',hot:true,text:'لماذا تُبنى التلسكوبات الراديوية بأحجام كبيرة جداً؟',opts:['لأنها أرخص','لأن الأشعة الراديوية ذات طول موجي طويل يقلل قوة التفريق','لأنها تحتاج محركات أكبر','لا سبب محدد'],ans:1,exp:'الأشعة الراديوية طويلة الموجة تقلل قوة التفريق، لذلك يُكبَّر قطر التلسكوب للتعويض.'},
+    {id:'f3m12',hot:true,text:'لماذا يجب رصد الأشعة السينية خارج الغلاف الجوي؟',opts:['لأنها باهظة التكلفة','لأن الغلاف الجوي يمنع دخول هذه الأشعة','لأن التلسكوبات الأرضية غير دقيقة','لا يوجد سبب'],ans:1,exp:'الغلاف الجوي يمتص الأشعة السينية فلا تصل لسطح الأرض، لذلك لابد من رصدها من الفضاء.'},
+    {id:'f3m13',hot:false,text:'ما وظيفة العدسة العينية في التلسكوب؟',opts:['تكبير صورة الجسم','جمع الأشعة عند البؤرة','رؤية صورة الجسم المكبّرة','تحديد البعد البؤري'],ans:2,exp:'العدسة العينية لرؤية الصورة المكبّرة المتكونة بواسطة العدسة الشيئية.'},
+    {id:'f3m14',hot:false,text:'ما هو الزيغ اللوني؟',opts:['تشوه يحدث بسبب انكسار الأطوال الموجية المختلفة بزوايا مختلفة','نوع من التلسكوبات','طريقة لحساب مسافة النجوم','خاصية للمرايا فقط'],ans:0,exp:'الزيغ اللوني: عند مرور الضوء الأبيض عبر عدسة، تنكسر الأطوال الموجية بزوايا مختلفة مكوِّنةً أهداباً ملونة.'},
+  ],
+  tf:[
+    {id:'f3t1',hot:true,text:'عندما ينتقل الإلكترون من مستوى طاقة أعلى إلى أقل، فإنه يمتص فوتوناً.',ans:false,exp:'خطأ — عند الانتقال لمستوى أقل يُنبعث فوتون. الامتصاص يحدث عند الانتقال لمستوى أعلى.'},
+    {id:'f3t2',hot:true,text:'التحليل الطيفي يمكن أن يساعد في تحديد العناصر الموجودة في الأجرام السماوية.',ans:true,exp:'صح — خطوط الطيف فريدة لكل عنصر مما يُمكّن العلماء من تحديد مكونات النجوم.'},
+    {id:'f3t3',hot:true,text:'الطيف المتكون لا يختلف باختلاف العناصر الغازية.',ans:false,exp:'خطأ — طيف كل عنصر فريد كالبصمة — يختلف باختلاف العنصر تماماً.'},
+    {id:'f3t4',hot:true,text:'كلما زاد الطول الموجي للأشعة الكهرومغناطيسية زادت طاقتها.',ans:false,exp:'خطأ — العلاقة عكسية: كلما قلّ الطول الموجي زادت الطاقة.'},
+    {id:'f3t5',hot:true,text:'سرعة جميع أجزاء الطيف الكهرومغناطيسي في الفراغ متساوية.',ans:true,exp:'صح — سرعة جميع الأشعة الكهرومغناطيسية في الفراغ = 3×10⁸ م/ث.'},
+    {id:'f3t6',hot:true,text:'كلما زاد قطر العدسة الشيئية زادت قوة التفريق للتلسكوب.',ans:true,exp:'صح — كلما زاد قطر الشيئية زادت قوة التفريق وقدرة التلسكوب على تمييز التفاصيل.'},
+    {id:'f3t7',hot:true,text:'تلسكوبات الأشعة السينية يجب أن تكون خارج الغلاف الجوي للأرض.',ans:true,exp:'صح — الغلاف الجوي يمتص الأشعة السينية ولا تصل لسطح الأرض.'},
+    {id:'f3t8',hot:true,text:'الزيغ الكروي يؤثر فقط في العدسات والمرايا الكروية.',ans:true,exp:'صح — الزيغ الكروي نوع تشوه في المرايا والعدسات الكروية بسبب اختلاف موضع البؤرة.'},
+    {id:'f3t9',hot:false,text:'تلسكوب هابل الفضائي هو تلسكوب راديوي.',ans:false,exp:'خطأ — تلسكوب هابل تلسكوب بصري يعمل في الفضاء الخارجي بالضوء المرئي والأشعة فوق البنفسجية.'},
+    {id:'f3t10',hot:false,text:'تختلف خطوط الامتصاص التي تظهر على الكاشف باختلاف نوع الغاز.',ans:true,exp:'صح — لكل غاز خطوط امتصاص مميزة تختلف عن غيره وتُعرَّف به كالبصمة.'},
+  ]
+},
+
+// ═══ الفصل الرابع: الأحافير والتأريخ الصخري ═══
+{
+  mc:[
+    {id:'f4m1',hot:true,text:'أيٌّ من الآتي يُعتبر من شروط تكوّن الأحافير؟',opts:['وجود أجزاء رخوة في جسم المخلوق','دفن الكائن ببطء','وجود أجزاء صلبة في جسم المخلوق','تعرض الكائن لدرجات حرارة عالية'],ans:2,exp:'من أهم شروط تكوّن الأحافير وجود أجزاء صلبة (عظام، أصداف) تقاوم التحلل.'},
+    {id:'f4m2',hot:true,text:'أيٌّ من الكائنات الحية التالية من النادر وجود أحافير لها؟',opts:['الديدان','ثلاثية الفصوص','الأمونيتات','الزواحف'],ans:0,exp:'الديدان ذات أجسام رخوة بالكامل بدون أجزاء صلبة — تحفّرها نادر جداً.'},
+    {id:'f4m3',hot:true,text:'أيٌّ من المناطق التالية أكثر ملاءمة لعملية الدفن السريع للأحافير؟',opts:['اليابسة','البيئات البحرية','الصحاري','الجبال'],ans:1,exp:'البيئات البحرية تؤمّن الدفن السريع بالرواسب مما يحمي الكائنات من التحلل.'},
+    {id:'f4m4',hot:true,text:'أيٌّ من الآتي يُعتبر من استخدامات الفرامنيفرا؟',opts:['تحديد أعمار الطبقات أثناء حفر آبار النفط','تحديد أعمار الصخور النارية','تحديد أعمار الكائنات المنقرضة','جميع ما ذُكر'],ans:0,exp:'الفرامنيفرا تستخدم لتحديد أعمار الطبقات أثناء حفر آبار النفط والغاز.'},
+    {id:'f4m5',hot:true,text:'أيٌّ من الآتي يُعدّ من طرق حفظ الأحافير؟',opts:['الحفظ الكامل','القوالب والأنماط','آثار الحفر','جميع ما ذُكر صحيح'],ans:3,exp:'طرق حفظ الأحافير متعددة: الحفظ الكامل، القوالب والنماذج، الطبع، آثار الحفر، التمعدن، التفحم.'},
+    {id:'f4m6',hot:true,text:'ما نوع الحفظ الذي يحفظ الكائن بجميع أجزائه الصلبة والرخوة؟',opts:['الحفظ الكامل','القوالب والأنماط','آثار الحفر','الطبع'],ans:0,exp:'الحفظ الكامل — مثل الماموث الصوفي في جليد سيبيريا والحشرات في الكهرمان.'},
+    {id:'f4m7',hot:true,text:'أيٌّ من الآتي من أمثلة الحفظ الكامل؟',opts:['الماموث الصوفي في ثلوج سيبيريا','وحيد القرن الصوفي في طبقات إسفلتية','بعض الحشرات في الكهرمان','جميع ما ذُكر صحيح'],ans:3,exp:'جميع هذه الأمثلة على الحفظ الكامل: الجليد، الإسفلت، والكهرمان تمنع التحلل.'},
+    {id:'f4m8',hot:true,text:'في أيّ نوع من الحفظ يتم استبدال المادة الأصلية للمخلوق بمعدن آخر؟',opts:['الحفظ الكامل','التمعدن','الإحلال','التفحم'],ans:1,exp:'التمعدن: تترسب الأملاح والمعادن في الفراغات، فتزيد من كثافة وثقل الحفريات.'},
+    {id:'f4m9',hot:true,text:'في عملية القوالب والأنماذج، ماذا يمثل "النموذج"؟',opts:['الشكل الخارجي للصدفة','التجويف الداخلي للصدفة','المادة التي تحل محل الصدفة','أثر القدم'],ans:2,exp:'النموذج هو المادة المعدنية التي تملأ التجويف الذي تركته الصدفة المذابة.'},
+    {id:'f4m10',hot:true,text:'ما أكبر تقسيم في سلم الزمن الجيولوجي؟',opts:['الحقب','الدهور','العصور','الأحيان'],ans:1,exp:'الدهور هي أكبر وحدة في سلم الزمن الجيولوجي — ثم الحقب ثم العصور ثم الأحيان.'},
+    {id:'f4m11',hot:true,text:'أيٌّ من الوحدات الزمنية تمت تسميتها أولاً عام 1795م؟',opts:['العصر الكربوني','العصر الديفوني','العصر الجوراسي','العصر الكامبري'],ans:2,exp:'العصر الجوراسي أول وحدة زمنية تمت تسميتها عام 1795م.'},
+    {id:'f4m12',hot:true,text:'ما الحين الحالي في سلم الزمن الجيولوجي؟',opts:['الجوراسي','الكربوني','الديفوني','الهولوسين'],ans:3,exp:'الهولوسين هو الحين الحالي وبدأ قبل 11 ألف سنة.'},
+    {id:'f4m13',hot:true,text:'أيٌّ من الحقب التالية شهدت ظهور الديناصورات؟',opts:['حقبة الحياة القديمة','حقبة الحياة المتوسطة','حقبة الحياة الحديثة','ما قبل الكامبري'],ans:1,exp:'ظهرت الديناصورات في حقبة الحياة المتوسطة (Mesozoic) وانقرضت في نهايتها.'},
+    {id:'f4m14',hot:true,text:'ما هي الأحافير المرشدة؟',opts:['أحافير لها عمر غير محدد وامتداد واسع','أحافير لها عمر محدد وامتداد جغرافي ضيق','أحافير لها عمر محدد وامتداد جغرافي واسع','أحافير بلا عمر محدد ولا امتداد'],ans:2,exp:'الأحافير المرشدة: عمر زمني محدد + امتداد جغرافي واسع — تُستخدم لتحديد الأعمار النسبية.'},
+    {id:'f4m15',hot:true,text:'أيٌّ من المبادئ التالية ليس من مبادئ تحديد العمر النسبي؟',opts:['مبدأ الترسيب الأفقي','مبدأ تعاقب الطبقات','مبدأ القاطع والمقطوع','مبدأ الكهرومغناطيسية'],ans:3,exp:'مبادئ العمر النسبي: الترسيب الأفقي، تعاقب الطبقات، القاطع والمقطوع، عدم التوافق، الاحتواء، المضاهاة.'},
+    {id:'f4m16',hot:true,text:'أيٌّ من الطرق التالية تُستخدم لتحديد عمر المواد العضوية؟',opts:['التأريخ باليورانيوم','التأريخ بالبوتاسيوم','التأريخ بالكربون المشع','التأريخ بالرصاص'],ans:2,exp:'الكربون-14 يستخدم لتحديد عمر المواد العضوية.'},
+    {id:'f4m17',hot:true,text:'ما الذي يحدث لذرات الكربون-14 في جسم المخلوق الحي بعد موته؟',opts:['تزداد كميتها','تتحول إلى نيتروجين-14','تبقى كما هي','تتحول إلى كربون-12'],ans:1,exp:'بعد الموت يبدأ الكربون-14 بالانحلال الإشعاعي ويتحول إلى نيتروجين-14.'},
+    {id:'f4m18',hot:true,text:'ما هو عمر النصف؟',opts:['عمر الكائن الحي','المدة اللازمة لتحلل نصف ذرات النظير المشع','عمر الصخر مقسوماً على اثنين','نصف عمر الأرض'],ans:1,exp:'عمر النصف = الزمن اللازم حتى يتحلل نصف ذرات النظير المشع.'},
+    {id:'f4m19',hot:true,text:'كم يشكل دهر الحياة الظاهرة من سلم الزمن الجيولوجي؟',opts:['10%','50%','90%','100%'],ans:0,exp:'دهر الحياة الظاهرة يشكل 10% فقط من سلم الزمن الجيولوجي.'},
+  ],
+  tf:[
+    {id:'f4t1',hot:true,text:'تُعتبر أحافير الكائنات البحرية أقل شيوعاً من أحافير البرية.',ans:false,exp:'خطأ — أحافير البحرية أكثر شيوعاً لأن الرواسب البحرية تدفنها بسرعة.'},
+    {id:'f4t2',hot:true,text:'يساعد الدفن السريع على حماية الكائنات من المؤثرات التي تؤدي إلى تحللها.',ans:true,exp:'صح — الدفن السريع يمنع التحلل والافتراس ويحفظ الأجزاء الصلبة.'},
+    {id:'f4t3',hot:true,text:'الأجزاء الصلبة في جسم المخلوق هي الوحيدة التي يمكن أن تتحول إلى أحافير.',ans:false,exp:'خطأ — الأجزاء الرخوة أيضاً قد تتحفّر في ظروف استثنائية كالتجمد أو الكهرمان.'},
+    {id:'f4t4',hot:true,text:'درجة الحرارة المرتفعة من العوامل التي تساعد على حفظ الأحافير.',ans:false,exp:'خطأ — الحرارة تسرّع التحلل. البيئات الباردة والجافة أفضل للحفظ.'},
+    {id:'f4t5',hot:true,text:'"القالب" و"النموذج" يمثلان نفس الشيء.',ans:false,exp:'خطأ — القالب هو التجويف الفارغ، والنموذج هو المادة التي تملأه — وهما مختلفان.'},
+    {id:'f4t6',hot:true,text:'لا يمكن أن يتكون "النموذج" إلا إذا كان هناك "قالب" موجود أولاً.',ans:true,exp:'صح — لا بد من وجود القالب (التجويف) أولاً ثم يتكون النموذج داخله.'},
+    {id:'f4t7',hot:true,text:'يتم الحفظ بالتمعدن في بيئة غنية بالأكسجين.',ans:false,exp:'خطأ — التمعدن يحدث في بيئات مختزلة خالية من الأكسجين.'},
+    {id:'f4t8',hot:true,text:'بدأت الحياة على الأرض بالديناصورات.',ans:false,exp:'خطأ — بدأت الحياة بكائنات مجهرية وحيدة الخلية. الديناصورات ظهرت لاحقاً في حقبة الحياة المتوسطة.'},
+    {id:'f4t9',hot:true,text:'انقرضت الديناصورات في نهاية حقبة الحياة المتوسطة.',ans:true,exp:'صح — انقرضت الديناصورات قبل 65 مليون سنة في نهاية حقبة الحياة المتوسطة.'},
+    {id:'f4t10',hot:true,text:'الأحافير المرشدة هي أحافير لها عمر محدد وامتداد جغرافي واسع.',ans:true,exp:'صح — هذا هو تعريف الأحافير المرشدة (الدالة).'},
+    {id:'f4t11',hot:true,text:'يساعد سلم الزمن الجيولوجي العلماء على إيجاد العلاقات بين الأحداث الجيولوجية والظروف البيئية وأشكال الحياة.',ans:true,exp:'صح — هذا الهدف الأساسي من سلم الزمن الجيولوجي.'},
+    {id:'f4t12',hot:true,text:'القطع الصخرية المحتبسة داخل صخر ناري أحدث من الصخر الناري نفسه.',ans:true,exp:'صح — مبدأ الاحتواء: القطعة أقدم من الصخر الذي يحتويها.'},
+    {id:'f4t13',hot:true,text:'تستخدم الطبقات المرشدة لتحديد العمر المطلق للصخور.',ans:false,exp:'خطأ — الطبقات المرشدة لتحديد العمر النسبي. العمر المطلق يستخدم التأريخ الإشعاعي.'},
+    {id:'f4t14',hot:true,text:'عمر النصف هو المدة الزمنية اللازمة لتحلل نصف ذرات النظير المشع.',ans:true,exp:'صح — هذا هو التعريف الدقيق لعمر النصف.'},
+    {id:'f4t15',hot:true,text:'القاطع الناري أقدم من الصخور التي يقطعها.',ans:false,exp:'خطأ — مبدأ القاطع والمقطوع: القاطع أحدث دائماً من المقطوع.'},
+    {id:'f4t16',hot:true,text:'يمكن استخدام النظائر المشعة ذات عمر النصف القصير لتحديد عمر الصخور القديمة جداً.',ans:false,exp:'خطأ — النظائر قصيرة عمر النصف تتحلل بسرعة ولا تُقاس في الصخور القديمة.'},
+  ]
+},
+
+// ═══ الفصل الخامس: الطاقة ومصادرها ═══
+{
+  mc:[
+    {id:'f5m1',hot:true,text:'ما المكون الرئيسي للنفط والغاز الطبيعي؟',opts:['الهيدروكربونات','الكبريت','النيتروجين','الفوسفور'],ans:0,exp:'النفط والغاز الطبيعي يتكونان أساساً من الهيدروكربونات (كربون + هيدروجين).'},
+    {id:'f5m2',hot:true,text:'النظرية الأكثر قبولاً لتفسير نشأة النفط هي:',opts:['النظرية المعدنية','النظرية العضوية (البيولوجية)','نظرية الانفجار العظيم','نظرية الصفائح التكتونية'],ans:1,exp:'النظرية العضوية الأكثر قبولاً — معظم حقول النفط في صخور رسوبية وتحتوي على مركبات عضوية.'},
+    {id:'f5m3',hot:true,text:'ما الذي يميز النفط عن المواد الأخرى؟',opts:['لونه الأسود','كثافته العالية','خاصية النشاط الضوئي','وجوده في الصخور الرسوبية'],ans:2,exp:'النفط يتميز بخاصية النشاط الضوئي التي تنفرد بها المواد العضوية.'},
+    {id:'f5m4',hot:true,text:'ما الذي يميز صخور المصدر (المولّدة للنفط)؟',opts:['مسامية ونفاذية عالية','احتواؤها على مواد عضوية','عدم نفاذيتها','لونها الفاتح'],ans:1,exp:'صخور المصدر: صخور رسوبية تحتوي على مواد عضوية تعرضت لضغط وحرارة تحولت لهيدروكربونات.'},
+    {id:'f5m5',hot:true,text:'أيٌّ من الآتي أفضل أنواع الصخور الخازنة للنفط؟',opts:['الطفل','الحجر الجيري','الحجر الرملي','المتبخرات'],ans:2,exp:'الحجر الرملي أفضل الصخور الخازنة لمساميته ونفاذيته العاليتين.'},
+    {id:'f5m6',hot:true,text:'ما العامل الأساسي الذي يساعد على توجيه النفط إلى المصيدة؟',opts:['الضغط','الماء','الجاذبية','الحرارة'],ans:1,exp:'الماء يوجّه النفط والغاز إلى المصيدة ويدفعه نحو فتحات الآبار.'},
+    {id:'f5m7',hot:true,text:'أيٌّ من الآتي لا يُعتبر من أنواع المصائد النفطية؟',opts:['المصائد التركيبية','المصائد الطبقية','المصائد البركانية','مصائد القباب الملحية'],ans:2,exp:'أنواع المصائد النفطية: التركيبية، الطبقية، القباب الملحية، المركبة. لا توجد مصائد بركانية.'},
+    {id:'f5m8',hot:true,text:'أيٌّ من الطرق الجيوفيزيائية تعتمد على تفجير شحنة صغيرة لإحداث موجة زلزالية؟',opts:['طريقة الجاذبية','الطريقة المغناطيسية','الطريقة الزلزالية','الطريقة الكهربائية'],ans:2,exp:'الطريقة الزلزالية تعتمد على إحداث موجات زلزالية وقياس انعكاسها من الطبقات الصخرية.'},
+    {id:'f5m9',hot:true,text:'أيٌّ من الآتي يمثل مصدراً للطاقة المتجددة؟',opts:['النفط','الغاز الطبيعي','الطاقة الشمسية','الفحم الحجري'],ans:2,exp:'الطاقة الشمسية مصدر متجدد يُستمد من موارد طبيعية دائمة التجدد.'},
+    {id:'f5m10',hot:true,text:'أيٌّ من الآتي يمثل تقنية للاستفادة من الطاقة الشمسية؟',opts:['الطاقة الكهروضوئية','طاقة الرياح','الطاقة الحرارية الأرضية','الطاقة الحيوية'],ans:0,exp:'الطاقة الكهروضوئية تحوّل الضوء الشمسي مباشرةً إلى كهرباء عبر الخلايا الشمسية.'},
+    {id:'f5m11',hot:true,text:'ما العنصر المستخدم في معظم محطات الطاقة النووية؟',opts:['الهيدروجين','اليورانيوم-235','الكربون','الصوديوم'],ans:1,exp:'اليورانيوم-235 يُستخدم في المفاعلات النووية لأنه يقبل الانشطار التسلسلي.'},
+    {id:'f5m12',hot:true,text:'ما الفرق الأساسي بين محطات الطاقة النووية والمحطات التقليدية؟',opts:['نوع المولد المستخدم','مصدر الحرارة','طريقة تحويل الماء لبخار','نوع التوربين'],ans:1,exp:'الفرق الأساسي: مصدر الحرارة — حرق الوقود في التقليدية، الانشطار النووي في النووية.'},
+    {id:'f5m13',hot:false,text:'ما الوقود الأحفوري؟',opts:['النفط والغاز فقط','الفحم فقط','النفط والغاز والفحم الحجري','الطاقة الشمسية وطاقة الرياح'],ans:2,exp:'الوقود الأحفوري: النفط، الغاز الطبيعي، والفحم الحجري — مصادر غير متجددة.'},
+    {id:'f5m14',hot:false,text:'أي الدول من أكثر الدول اعتماداً على الطاقة الحرارية الأرضية؟',opts:['المملكة العربية السعودية','أيسلندا','الصين','البرازيل'],ans:1,exp:'أيسلندا من أكثر دول العالم اعتماداً على الطاقة الحرارية الأرضية لقربها من المناطق البركانية.'},
+  ],
+  tf:[
+    {id:'f5t1',hot:true,text:'النفط والغاز الطبيعي يتكونان فقط في الصخور النارية.',ans:false,exp:'خطأ — النفط والغاز يتكونان في الصخور الرسوبية.'},
+    {id:'f5t2',hot:true,text:'الماء يلعب دوراً هاماً في عملية إنتاج النفط.',ans:true,exp:'صح — الماء يوجّه النفط والغاز نحو المصيدة ويدفعهما إلى فتحات الآبار.'},
+    {id:'f5t3',hot:true,text:'صخور المكمن (الخازنة) يجب أن تكون غير منفذة.',ans:false,exp:'خطأ — صخور المكمن يجب أن تكون ذات مسامية ونفاذية عاليتين. غير المنفذة هي صخور الغطاء.'},
+    {id:'f5t4',hot:true,text:'صخور الغطاء تسمح بمرور السوائل من خلالها.',ans:false,exp:'خطأ — صخور الغطاء غير منفذة — تمنع حركة السوائل وتحبس النفط في المصيدة.'},
+    {id:'f5t5',hot:true,text:'الوقود الأحفوري يعتبر مصدراً متجدداً للطاقة.',ans:false,exp:'خطأ — الوقود الأحفوري مصدر غير متجدد — تكوّن على مدى ملايين السنين ولا يُجدَّد.'},
+    {id:'f5t6',hot:true,text:'الطريقة المغناطيسية تعتمد على قياس التغير في شدة المجال المغناطيسي للأرض.',ans:true,exp:'صح — الطريقة المغناطيسية تقيس التغيرات في المجال المغناطيسي للتعرف على التكوينات الصخرية.'},
+    {id:'f5t7',hot:true,text:'الانشطار النووي يحدث عندما تتحد نواة ذرة مع نواة أخرى.',ans:false,exp:'خطأ — الانشطار: تنقسم النواة الضخمة. أما اتحاد النوى فهو الاندماج النووي.'},
+    {id:'f5t8',hot:true,text:'اليورانيوم-238 هو النظير الأكثر استخداماً في المفاعلات النووية.',ans:false,exp:'خطأ — اليورانيوم-235 هو المستخدم. 238 لا ينشطر تسلسلياً.'},
+    {id:'f5t9',hot:true,text:'الطاقة المتجددة هي الطاقة المستمَدة من الموارد الطبيعية التي تتجدد بصورة دائمة.',ans:true,exp:'صح — كالشمس والرياح والمياه — تتجدد ولا تنضب.'},
+    {id:'f5t10',hot:true,text:'مشروع دومة الجندل هو مشروع لطاقة الرياح في المملكة.',ans:true,exp:'صح — مشروع دومة الجندل لطاقة الرياح، الأول في الشرق الأوسط، بطاقة 400 ميجاواط.'},
+    {id:'f5t11',hot:false,text:'الطاقة الذرية لا تنتج أي انبعاثات ضارة بالبيئة.',ans:false,exp:'خطأ — الطاقة النووية لها مخاطر: تسرب الإشعاعات، النفايات المشعة، والأثر البيئي.'},
+    {id:'f5t12',hot:false,text:'المصائد المركبة تتكون من نوع واحد فقط من المصائد.',ans:false,exp:'خطأ — المصائد المركبة تجمع أكثر من نوع من المصائد.'},
+  ]
+},
+
+// ═══ الفصل السادس: جيولوجيا المملكة ═══
+{
+  mc:[
+    {id:'f6m1',hot:true,text:'أيٌّ من الأقاليم الجيولوجية التالية يقع غرب المملكة؟',opts:['إقليم الدرع العربي','إقليم الرف العربي','إقليم البحر الأحمر','إقليم الكثبان الرملية'],ans:0,exp:'إقليم الدرع العربي يقع في الجزء الغربي من المملكة ويشكل 32% من مساحتها.'},
+    {id:'f6m2',hot:true,text:'ما النسبة المئوية للدرع العربي من مساحة المملكة؟',opts:['23%','32%','50%','68%'],ans:1,exp:'الدرع العربي يشكل حوالي 32% من مساحة المملكة (630 ألف كم²).'},
+    {id:'f6m3',hot:true,text:'أيٌّ من الأقاليم الجيولوجية التالية غني بالنفط؟',opts:['إقليم الدرع العربي','إقليم الرف العربي','إقليم البحر الأحمر','إقليم الحرات'],ans:1,exp:'إقليم الرف العربي غني بالثروات الطبيعية — وفيه حقول النفط الرئيسية.'},
+    {id:'f6m4',hot:true,text:'ما هي أقدم الحرات عمراً في المملكة العربية السعودية؟',opts:['حرة رهاط','حرة طفيل','حرة سراة عبيدة','لا يوجد'],ans:2,exp:'حرة سراة عبيدة أقدم حرات المملكة — عمرها 25-30 مليون سنة.'},
+    {id:'f6m5',hot:true,text:'ما هي السباخ؟',opts:['أراضٍ رملية واسعة','أراضٍ مستوية ملحية بين الصحراء والبحر','جبال مرتفعة','غابات كثيفة'],ans:1,exp:'السباخ: أرض مستوية ملحية تقع بين الصحراء والبحر، أو كانت قديماً بحيرة أو بحراً.'},
+    {id:'f6m6',hot:true,text:'ما العنصر الذي يُستخرج من السباخ؟',opts:['النفط','الغاز','الملح','الذهب'],ans:2,exp:'يُستخرج الملح من السباخ التي تتميز بترسبات ملحية وجبسية.'},
+    {id:'f6m7',hot:true,text:'أيٌّ من الصفائح كانت ملتصقة بالصفيحة العربية قبل تشكّل البحر الأحمر؟',opts:['الصفيحة الهندية','الصفيحة الأفريقية','الصفيحة الأوراسية','صفيحة الأناضول'],ans:1,exp:'الصفيحة العربية كانت ملتصقة بالصفيحة الأفريقية قبل تشكّل البحر الأحمر.'},
+    {id:'f6m8',hot:true,text:'ما اسم البحر الذي كان يحيط بالصفيحة العربية من الشمال والشرق قديماً؟',opts:['البحر الأحمر','بحر العرب','بحر التيثس','البحر الأبيض المتوسط'],ans:2,exp:'بحر التيثس كان يحيط بالصفيحة العربية من الشمال والشرق قبل اصطدامها بآسيا.'},
+    {id:'f6m9',hot:true,text:'أيٌّ من الجبال التالية لم يتكوّن نتيجة تصادم الصفيحة العربية بآسيا؟',opts:['جبال طوروس','جبال زاجروس','جبال الألب','جبال عمان'],ans:2,exp:'جبال الألب في أوروبا تكوّنت نتيجة تصادم الصفيحة الأفريقية بالأوراسية وليس العربية.'},
+    {id:'f6m10',hot:true,text:'ما المصدر الرئيسي للمياه الجوفية؟',opts:['الأنهار والبحيرات','الأمطار','الثلوج','مياه البحر'],ans:1,exp:'مياه الأمطار المصدر الرئيسي للمياه الجوفية — تتسرب للطبقات التحت سطحية.'},
+    {id:'f6m11',hot:true,text:'أيٌّ من أنواع الطبقات المائية تكون تحت ضغط مرتفع؟',opts:['الطبقات المعلقة','الطبقات غير المحصورة','الطبقات المحصورة','جميع ما ذُكر'],ans:2,exp:'الطبقات المحصورة محاطة بطبقتين صماويتين، والضغط فيها أعلى من الجوي.'},
+    {id:'f6m12',hot:true,text:'أيٌّ من التكوينات يعتبر مكمناً للنفط في الرف العربي؟',opts:['تكوين عرب','تكوين اليمامة','تكوين أم رضمة','تكوين الدمام'],ans:0,exp:'تكوين عرب من أهم مكامن النفط في الرف العربي (عمر جوراسي).'},
+    {id:'f6m13',hot:false,text:'ما أقدم صخور الدرع العربي المكتشفة؟',opts:['الحجر الرملي والحجر الجيري','الجرانيت والنيس والشيست','الجبس والملح','الرخام والكوارتز'],ans:1,exp:'أقدم صخور الدرع العربي (الجرانيت والنيس والشيست) تقع جنوب عفيف — عمرها أكثر من 2000 مليون سنة.'},
+    {id:'f6m14',hot:false,text:'أيٌّ من التكوينات التالية يتكون من الحجر الرملي في الرف العربي؟',opts:['تكوين ساق','تكوين عرب','تكوين الدمام','تكوين الرياض'],ans:0,exp:'تكوين ساق يتكون أساساً من الحجر الرملي — عمره الكامبري وبداية الأردوفيشي.'},
+  ],
+  tf:[
+    {id:'f6t1',hot:true,text:'أقدم صخور الدرع العربي المكتشفة هي الجرانيت والنيس والشيست.',ans:true,exp:'صح — هذه الصخور تقع جنوب عفيف وعمرها أكثر من 2000 مليون سنة.'},
+    {id:'f6t2',hot:true,text:'إقليم الرف العربي يقع إلى الغرب من الدرع العربي.',ans:false,exp:'خطأ — الرف العربي يقع إلى الشرق والشمال والجنوب من الدرع العربي.'},
+    {id:'f6t3',hot:true,text:'إقليم البحر الأحمر تكوّن نتيجة للنشاط البركاني.',ans:false,exp:'خطأ — البحر الأحمر تكوّن نتيجة انفصال الصفيحة العربية عن الأفريقية وحدوث صدع كبير.'},
+    {id:'f6t4',hot:true,text:'الصفيحة العربية لا تزال تتحرك باتجاه الشمال الشرقي.',ans:true,exp:'صح — الصفيحة العربية تتحرك باتجاه الشمال الشرقي بمعدل 1.5-2 سم سنوياً.'},
+    {id:'f6t5',hot:true,text:'السباخ الداخلية تقع بالقرب من البحار.',ans:false,exp:'خطأ — السباخ الداخلية تقع في عمق الصحراء. السباخ الساحلية هي التي تقرب من البحار.'},
+    {id:'f6t6',hot:true,text:'الطبقات المحصورة تكون تحت ضغط مرتفع.',ans:true,exp:'صح — الطبقات المحصورة محاطة من الأعلى والأسفل بطبقات صماء، والضغط فيها أعلى من الجوي.'},
+    {id:'f6t7',hot:true,text:'الماء الأحفوري هو الماء المحبوس في الصخور النارية.',ans:false,exp:'خطأ — الماء الأحفوري محبوس في الصخور الرسوبية أثناء تكوّنها في قيعان البحار والمحيطات.'},
+    {id:'f6t8',hot:true,text:'تعتبر المياه الجوفية المصدر الرئيسي للمياه في المملكة العربية السعودية.',ans:true,exp:'صح — المياه الجوفية تمثل 90% من إجمالي مصادر مياه التحلية في المملكة.'},
+    {id:'f6t9',hot:true,text:'تكوين ساق يتكون من الحجر الرملي.',ans:true,exp:'صح — تكوين ساق يتكون أساساً من الحجر الرملي — عصر الكامبري.'},
+    {id:'f6t10',hot:true,text:'تبلغ المساحة الإجمالية للسباخ الرئيسية في المملكة أكثر من 10 آلاف كم².',ans:true,exp:'صح — المساحة الإجمالية للسباخ الرئيسية أكثر من 11 ألف كم².'},
+    {id:'f6t11',hot:false,text:'لا تتأثر الخزانات المحصورة بالتلوث لأنها محمية بطبقة عازلة.',ans:true,exp:'صح — الطبقة العازلة (الصماء) فوقها تمنع وصول الملوثات السطحية إليها.'},
+    {id:'f6t12',hot:false,text:'الطبقات المعلقة تحتوي على الماء لفترات محدودة.',ans:true,exp:'صح — الطبقات المعلقة تختزن الماء مؤقتاً وتكون معلقة في التربة لمسافات محدودة.'},
+    {id:'f6t13',hot:false,text:'تعتبر المياه العذبة مورداً طبيعياً هاماً وأساسياً للحياة.',ans:true,exp:'صح — المياه العذبة أساس الحياة ويعتمد عليها الإنسان في كل مناحي الحياة.'},
+  ]
+}
+];
+
+// ════════════════════════════════════════════════
+// المتغيرات الرئيسية — مرة واحدة فقط
+// ════════════════════════════════════════════════
+var PG_SIZE   = 40;
+var curUnit   = 0;
+var answered  = QUESTIONS.map(function(){ return {}; });
+var curPage   = [0,0,0,0,0,0];
+var comments  = [];
+
+// ── دوال مساعدة ──
+function getMC()  { return QUESTIONS[curUnit].mc; }
+function getTF()  { return QUESTIONS[curUnit].tf; }
+function getStore(){ return answered[curUnit]; }
+
+function countStats() {
+  var store = getStore();
+  var cor=0, wrg=0;
+  QUESTIONS[curUnit].mc.concat(QUESTIONS[curUnit].tf).forEach(function(q){
+    if (store[q.id]==='correct') cor++;
+    else if (store[q.id]==='wrong') wrg++;
+  });
+  return {cor:cor, wrg:wrg, ans:cor+wrg};
+}
+
+// ── تبديل الفصل ──
+function switchUnit(idx, btn) {
+  curUnit = idx;
+  document.querySelectorAll('.ch-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  curPage[curUnit] = 0;
+  renderAll();
+}
+
+// ── تحديث الإحصاءات ──
+function updateStats() {
+  var s = countStats();
+  var base = QUESTIONS[curUnit].mc.concat(QUESTIONS[curUnit].tf);
+  document.getElementById('sc-ans').textContent = s.ans;
+  document.getElementById('sc-cor').textContent = s.cor;
+  document.getElementById('sc-wrg').textContent = s.wrg;
+  document.getElementById('sc-pct').textContent = s.ans>0 ? Math.round(s.cor/s.ans*100)+'%' : '—';
+  document.getElementById('stat-mc').textContent = QUESTIONS[curUnit].mc.length;
+  document.getElementById('stat-tf').textContent = QUESTIONS[curUnit].tf.length;
+  var tot = 0;
+  QUESTIONS.forEach(function(u){ tot += u.mc.length + u.tf.length; });
+  document.getElementById('stat-total').textContent = tot;
+  var pct = base.length>0 ? Math.round(s.ans/base.length*100) : 0;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-txt').textContent = s.ans+' من '+base.length+' سؤال';
+
+  var allDone = base.length>0 && s.ans===base.length;
+  var panel = document.getElementById('results-panel');
+  if (allDone) {
+    panel.classList.add('show');
+    document.getElementById('res-pct').textContent   = Math.round(s.cor/base.length*100)+'%';
+    document.getElementById('res-total').textContent = base.length;
+    document.getElementById('res-cor').textContent   = s.cor;
+    document.getElementById('res-wrg').textContent   = s.wrg;
+  } else {
+    panel.classList.remove('show');
+  }
+}
+
+// ── رسم قسم أسئلة ──
+function renderSection(qs, offset, label) {
+  var frag = document.createDocumentFragment();
+  var store = getStore();
+  qs.forEach(function(q, i) {
+    var state   = store[q.id];
+    var cardCls = state ? (state==='correct' ? 'correct' : 'wrong') : '';
+    var typeBdg = q.id.indexOf('m') > -1 ? '<span class="badge b-mc">اختيار</span>' : '<span class="badge b-tf">صح/خطأ</span>';
+    var hotBdg  = q.hot ? '<span class="badge b-hot">⭐ متكررة</span>' : '';
+
+    var bodyHtml = '';
+    if (q.id.indexOf('m') > -1) {
+      // اختيار من متعدد
+      bodyHtml = '<div class="opts">';
+      q.opts.forEach(function(opt, idx) {
+        var cls = 'opt';
+        if (state) {
+          if (idx===q.ans) cls += ' correct-ans';
+          else if (store[q.id+'_sel']===idx && idx!==q.ans) cls += ' wrong-ans';
+        }
+        var letter = ['أ','ب','ج','د'][idx];
+        bodyHtml += '<button class="'+cls+'" onclick="answerMC(\''+q.id+'\','+idx+','+q.ans+')" '+(state?'disabled':'')+'>'+letter+'. '+opt+'</button>';
+      });
+      bodyHtml += '</div>';
+    } else {
+      // صح/خطأ
+      var tc='tfb', fc='tfb';
+      if (state) {
+        if (q.ans===true)  { tc+=' correct-ans'; fc+=' wrong-ans'; }
+        else               { fc+=' correct-ans'; tc+=' wrong-ans'; }
+      }
+      bodyHtml = '<div class="tf-row">'
+        + '<button class="'+tc+'" onclick="answerTF(\''+q.id+'\',true,'+q.ans+')" '+(state?'disabled':'')+'>✓ صح</button>'
+        + '<button class="'+fc+'" onclick="answerTF(\''+q.id+'\',false,'+q.ans+')" '+(state?'disabled':'')+'>✗ خطأ</button>'
+        + '</div>';
+    }
+
+    var expHtml = '';
+    if (state) {
+      var ok = state==='correct';
+      expHtml = '<div class="explanation '+(ok?'ok':'bad')+'"><strong>'+(ok?'✓ ممتاز! الإجابة صحيحة':'✗ الإجابة الصحيحة:')+'</strong><br>'+q.exp+'</div>';
+    }
+
+    var wrap = document.createElement('div');
+    wrap.className = 'q-wrap';
+    wrap.innerHTML = '<div class="q-card '+cardCls+'">'
+      + '<div class="q-meta">'+typeBdg+hotBdg+'<span class="q-num">سؤال '+(offset+i+1)+'</span></div>'
+      + '<div class="q-text">'+q.text+'</div>'
+      + bodyHtml+expHtml
+      + '</div>';
+    frag.appendChild(wrap);
+  });
+  return frag;
+}
+
+// ── رسم الصفحة الكاملة ──
+function renderAll() {
+  var mc    = getMC();
+  var tf    = getTF();
+  var pg    = curPage[curUnit];
+  var container = document.getElementById('quiz');
+  container.innerHTML = '';
+
+  // الصفحة الحالية من الاختيار (0-39)
+  var mcStart = pg * PG_SIZE;
+  var mcEnd   = Math.min(mcStart + PG_SIZE, mc.length);
+  var pageMC  = mc.slice(mcStart, mcEnd);
+  var remaining = PG_SIZE - pageMC.length;
+  // بقية المساحة تُستكمل من صح/خطأ
+  var tfStart = Math.max(0, pg * PG_SIZE - mc.length);
+  var tfEnd   = Math.min(tfStart + remaining, tf.length);
+  var pageTF  = remaining > 0 && tfStart < tf.length ? tf.slice(tfStart, tfEnd) : [];
+
+  // حساب عدد الأسئلة الكلي والصفحات
+  var total    = mc.length + tf.length;
+  var totalPgs = Math.max(1, Math.ceil(total / PG_SIZE));
+
+  // قسم الاختيار من متعدد
+  if (pageMC.length > 0) {
+    var sh1 = document.createElement('div');
+    sh1.innerHTML = '<div class="sec-head"><div class="sec-line"></div><div class="sec-title">📝 أسئلة الاختيار من متعدد</div><div class="sec-line"></div></div>';
+    container.appendChild(sh1);
+    container.appendChild(renderSection(pageMC, mcStart, 'mc'));
+  }
+
+  // قسم صح/خطأ
+  if (pageTF.length > 0) {
+    var sh2 = document.createElement('div');
+    sh2.innerHTML = '<div class="sec-head"><div class="sec-line"></div><div class="sec-title">✅ أسئلة الصح والخطأ</div><div class="sec-line"></div></div>';
+    container.appendChild(sh2);
+    container.appendChild(renderSection(pageTF, mc.length + tfStart, 'tf'));
+  }
+
+  // معلومات الصفحة
+  var shown = pageMC.length + pageTF.length;
+  var startIdx = pg * PG_SIZE + 1;
+  document.getElementById('pg-info').textContent =
+    'الأسئلة ' + startIdx + '–' + (startIdx + shown - 1) + ' من ' + total + ' | الجزء ' + (pg+1) + ' من ' + totalPgs;
+
+  // أزرار التنقل
+  document.getElementById('pag').innerHTML =
+    '<button class="pg-btn" onclick="goPage('+(pg-1)+')" '+(pg===0?'disabled':'')+'>→ السابق</button>'
+    + '<span class="pg-num">'+(pg+1)+' / '+totalPgs+'</span>'
+    + '<button class="pg-btn primary" onclick="goPage('+(pg+1)+')" '+(pg>=totalPgs-1?'disabled':'')+'>التالي ←</button>';
+
+  updateStats();
+}
+
+function goPage(p) {
+  var mc = getMC(), tf = getTF();
+  var total = mc.length + tf.length;
+  var totalPgs = Math.max(1, Math.ceil(total / PG_SIZE));
+  if (p < 0 || p >= totalPgs) return;
+  curPage[curUnit] = p;
+  window.scrollTo({top:0, behavior:'smooth'});
+  renderAll();
+}
+
+function answerMC(id, sel, ans) {
+  var store = getStore();
+  if (store[id]) return;
+  store[id+'_sel'] = sel;
+  store[id] = sel===ans ? 'correct' : 'wrong';
+  renderAll();
+}
+
+function answerTF(id, sel, ans) {
+  var store = getStore();
+  if (store[id]) return;
+  store[id] = (sel===ans) ? 'correct' : 'wrong';
+  renderAll();
+}
+
+function resetUnit() {
+  if (!confirm('هل تريد إعادة تعيين جميع إجابات هذا الفصل؟')) return;
+  answered[curUnit] = {};
+  curPage[curUnit] = 0;
+  window.scrollTo({top:0, behavior:'smooth'});
+  renderAll();
+}
+
+function submitComment() {
+  var text = document.getElementById('comment-text').value.trim();
+  if (!text) return;
+  var now = new Date();
+  var t = now.toLocaleDateString('ar-SA') + ' — ' + now.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+  comments.unshift({text:text, time:t});
+  document.getElementById('comment-text').value = '';
+  renderComments();
+}
+
+function renderComments() {
+  var list = document.getElementById('comments-list');
+  list.innerHTML = comments.map(function(c){
+    return '<div class="comment-item">'+c.text+'<div class="comment-time">'+c.time+'</div></div>';
+  }).join('');
+}
+
+// ── تشغيل أولي ──
+renderAll();
+</script>
+
+<script data-goatcounter="https://h3i2bownw.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
